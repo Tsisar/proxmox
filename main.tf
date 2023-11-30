@@ -9,8 +9,6 @@ terraform {
 
 provider "proxmox" {
   endpoint = "https://192.168.88.21:8006/"
-  username = "root@pam"
-  password = "super_password"
   insecure = true
   ssh {
     agent = false

@@ -6,13 +6,13 @@ packages:
 timezone: Europe/Kiev
 users:
   - name: tsisar
-    passwd: password
+    passwd: $6$faz0c7wQC/xqgNaq$ks2MFTlBkCgSOejM6tvCfKduraBOn9dCpI1dEG.8XTpnHTJPHVkBeV4WyQIWayAAGdj/7LL5FOqtpUdNNGwpH1
     groups: [adm, cdrom, dip, plugdev, lxd, sudo]
     lock-passwd: false
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-      - <key>
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCi/qaxafs2F4MIgdvakUcqRwV91HSHoKTySVp74gcKefhJDO/2Tok6Yen7h3Dkwyp25twx81/BhkU4T7FoJp+4CMPew+ri8O3mXfRyVZDBePtMNRh3OLpAZ3tuG1DNJUPnj+UK+FunbxxlPkJ5ecKEzXABiWAtVA2j+vqYWbBRDupguECCrp4DY2A0kHBudL7aMgm7YCs6LPerT33JJZIfZ+v8Ow4tj/ANgNi9pNrKlyIafXp30JKNQA+FNpCVVnutMtA1JLvGHbxCAAlz1iYaUE+5i2ZSwn1qogEfGM9wuRc+5gqQVWu38l/ysv7rNBND0XdRTMfaMY5qTiYtoLdtImwU0vhNrCcuX0VWmkXGJUsOrXML+FRbEFA9QNfmplK/8IQ6CP6QB829j5XnOJhHGCrJtLXvAx1FEm/S/NeIXMl38L1ivNoILd8zYknV8R15/ycrDliqF+ADvihoCoSNFcLls0B7dxu2XVusxQG6EES1B9QffcY95fjaSdPwYHQV3coMpWjRCyPjHqnN7K5c/Tzy4gK6PzmRoZhCPqBtDknK/6JPb7VjXJlQX2yyFwA3v+CHmmXWGFrG2MgrIGNr5Vbz/GRhKHpHKKZqahdCTWC7GVqbJm0UopC/vbzBx5Gh5OhA7XJKvcnszLKfzqVI3sYoKloeIL2MkGbvXzcNsQ== ua.pavlo.tsisar@gmail.com
 
 power_state:
     delay: now
