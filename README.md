@@ -106,6 +106,22 @@ spec:
   type: NodePort
 ```
 
+
+## Storage class
+Download rancher.io/local-path storage class:
+```shell
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+```
+Check with:
+```shell
+kubectl get storageclass
+```
+Make this storage class (local-path) the default:
+```shell
+kubectl patch storageclass local-path -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}'
+```
+
+
 ## ArgoCD
 https://argo-cd.readthedocs.io/en/stable/
 
@@ -154,3 +170,39 @@ Change the password using the command
 ```shell
 argocd account update-password
 ```
+
+# Monitoring
+
+## Elasticsearch for Kubernetes
+
+Elasticsearch is used as storage for Jaeger.
+
+Currently 8.x ElasticSearch version is not compatible with Jaeger, hence we using version 7.17.15.
+
+Elasticsearch is deployed using the Kubernetes Operator pattern. You can read in more detail in the article Elastic Cloud on Kubernetes https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-overview.html.
+
+1. Install custom resource definitions:
+    ```shell
+    kubectl create -f https://download.elastic.co/downloads/eck/2.10.0/crds.yaml
+    ```
+2. Install the operator with its RBAC rules:
+   ```shell
+   kubectl apply -f https://download.elastic.co/downloads/eck/2.10.0/operator.yaml
+   ```
+
+3. Create the namespace `monitoring` for further deployment.
+   ```shell
+   kubectl create namespace monitoring
+   ```
+4. Deploy an Elasticsearch cluster
+   ```shell
+   kubectl apply -f .\k8s\monitoring\elastic\elasticsearch.yaml
+   ```
+   The operator automatically creates and manages Kubernetes resources to achieve the desired state of the Elasticsearch cluster. It may take up to a few minutes until all the resources are created and the cluster is ready for use.
+
+5. Elasticsearch access
+   ```shell
+   PASSWORD=$(kubectl -n monitoring  get secret elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')
+   kubectl -n monitoring create secret generic jaeger-storage-secret --from-literal=ES_PASSWORD=${PASSWORD} --from-literal=ES_USERNAME=elastic
+   ```
+   The command will automatically create jaeger-storage-secret for further use in Jaeger.

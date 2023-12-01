@@ -1,0 +1,48 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+
+metadata:
+  name: jaeger
+  namespace: monitoring
+
+spec:
+  strategy: allInOne
+
+  allInOne:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "key"
+                  operator: In
+                  values:
+                    - "infra"
+    image: jaegertracing/all-in-one:latest
+    options:
+      log-level: info
+
+  storage:
+    type: elasticsearch
+    options:
+      es:
+        version: 7
+        server-urls: https://elasticsearch-es-http.monitoring.svc:9200
+        tls:
+          enabled: true
+          ca: /es/certificates/ca.crt
+    esIndexCleaner:
+      enabled: true
+      numberOfDays: 7
+      schedule: "55 23 * * *"
+    secretName: jaeger-storage-secret
+
+  volumeMounts:
+    - name: certificates
+      mountPath: /es/certificates/
+      readOnly: true
+
+  volumes:
+    - name: certificates
+      secret:
+        secretName: elasticsearch-es-http-certs-internal

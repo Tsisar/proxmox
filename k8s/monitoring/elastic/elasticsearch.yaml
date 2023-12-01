@@ -1,0 +1,52 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch
+  namespace: monitoring      
+spec:
+  version: 7.17.15
+  nodeSets:
+  - name: default
+    count: 1
+    config:
+      node.roles:
+      - master
+      - data
+      - ingest
+      node.store.allow_mmap: false
+    podTemplate:
+      metadata:
+        labels:
+          app: elasticsearch
+      spec:
+#        nodeSelector:
+#          key: infra
+        containers:
+        - name: elasticsearch
+          # specify resource limits and requests
+#          resources:
+#            requests:
+#              memory: 2Gi
+#              cpu: 0.5
+#            limits:
+#              memory: 2Gi
+#              cpu: 1
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+#        storageClassName: standard
+  http:
+    tls:
+#      selfSignedCertificate:
+#        disabled: true
+      selfSignedCertificate:
+        subjectAltNames:
+        - dns: elasticsearch-es-http.monitoring.svc.cluster.local
+        - dns: elasticsearch-es-http.monitoring.svc
+        - dns: elasticsearch-es-http
