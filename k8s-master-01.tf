@@ -9,7 +9,7 @@ resource "proxmox_virtual_environment_vm" "k8s_master_01" {
   }
 
   memory {
-    dedicated = 6144
+    dedicated = 4096
   }
 
   agent {

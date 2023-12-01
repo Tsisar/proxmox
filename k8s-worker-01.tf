@@ -5,11 +5,11 @@ resource "proxmox_virtual_environment_vm" "k8s_worker_01" {
   node_name   = "pve"
 
   cpu {
-    cores = 1
+    cores = 2
   }
 
   memory {
-    dedicated = 4096
+    dedicated = 8192
   }
 
   agent {
