@@ -437,3 +437,5 @@ terraform.rc
 .terraform.lock.hcl
 
 .envrc
+
+.idea/
