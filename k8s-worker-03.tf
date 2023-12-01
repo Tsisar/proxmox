@@ -34,7 +34,7 @@ resource "proxmox_virtual_environment_vm" "k8s_worker_03" {
   }
 
   initialization {
-    datastore_id = "local-btrfs"
+    datastore_id = "nvme"
     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
     
     ip_config {
