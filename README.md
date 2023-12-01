@@ -84,3 +84,6 @@ After Secret is created, we can execute the following command to get the token w
 ```shell
 kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
 ```
+
+- Accessing the Dashboard
+
