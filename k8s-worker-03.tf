@@ -1,15 +1,16 @@
 resource "proxmox_virtual_environment_vm" "k8s_worker_03" {
+  vm_id       = 100
   name        = "k8s-worker-03"
   description = "Managed by Terraform"
   tags        = ["terraform"]
   node_name   = "pve"
 
   cpu {
-    cores = 1
+    cores = 2
   }
 
   memory {
-    dedicated = 2048
+    dedicated = 4096
   }
 
   agent {
@@ -17,7 +18,14 @@ resource "proxmox_virtual_environment_vm" "k8s_worker_03" {
   }
 
   network_device {
-    bridge = "vmbr0"
+    bridge    = "vmbr0"
+    ip_config {
+      ipv4 {
+        address = "192.168.88.43/24"
+        gateway = "192.168.88.1"
+        dns = ["192.168.88.1", "8.8.8.8"] # Додаємо DNS сервери
+      }
+    }
   }
 
   disk {
@@ -34,13 +42,7 @@ resource "proxmox_virtual_environment_vm" "k8s_worker_03" {
   }
 
   initialization {
-    datastore_id = "nvme"
+    datastore_id = "local-btrfs"
     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
-    
-    ip_config {
-      ipv4 {
-        address = "dhcp"
-      }
-    }
   }
 }

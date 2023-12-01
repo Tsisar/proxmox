@@ -1,4 +1,5 @@
 resource "proxmox_virtual_environment_vm" "k8s_master_01" {
+  vm_id       = 100
   name        = "k8s-master-01"
   description = "Managed by Terraform"
   tags        = ["terraform"]
@@ -17,7 +18,14 @@ resource "proxmox_virtual_environment_vm" "k8s_master_01" {
   }
 
   network_device {
-    bridge = "vmbr0"
+    bridge    = "vmbr0"
+    ip_config {
+      ipv4 {
+        address = "192.168.88.40/24"
+        gateway = "192.168.88.1"
+        dns = ["192.168.88.1", "8.8.8.8"] # Додаємо DNS сервери
+      }
+    }
   }
 
   disk {
@@ -36,11 +44,5 @@ resource "proxmox_virtual_environment_vm" "k8s_master_01" {
   initialization {
     datastore_id = "local-btrfs"
     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
-
-    ip_config {
-      ipv4 {
-        address = "dhcp"
-      }
-    }
   }
 }
