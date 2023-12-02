@@ -1,5 +1,5 @@
 resource "proxmox_virtual_environment_vm" "k8s_worker_01" {
-  vm_id       = 100
+  vm_id       = 101
   name        = "k8s-worker-01"
   description = "Managed by Terraform"
   tags        = ["terraform"]
@@ -10,7 +10,7 @@ resource "proxmox_virtual_environment_vm" "k8s_worker_01" {
   }
 
   memory {
-    dedicated = 4096
+    dedicated = 8192
   }
 
   agent {
@@ -19,20 +19,13 @@ resource "proxmox_virtual_environment_vm" "k8s_worker_01" {
 
   network_device {
     bridge    = "vmbr0"
-    ip_config {
-      ipv4 {
-        address = "192.168.88.41/24"
-        gateway = "192.168.88.1"
-        dns = ["192.168.88.1", "8.8.8.8"] # Додаємо DNS сервери
-      }
-    }
   }
 
   disk {
     datastore_id = "local-btrfs"
     file_id      = proxmox_virtual_environment_file.debian_cloud_image.id
     interface    = "scsi0"
-    size         = 60
+    size         = 120
   }
 
   serial_device {} # The Debian cloud image expects a serial port to be present
@@ -44,5 +37,11 @@ resource "proxmox_virtual_environment_vm" "k8s_worker_01" {
   initialization {
     datastore_id = "local-btrfs"
     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
+    ip_config {
+      ipv4 {
+        address = "192.168.88.41/24"
+        gateway = "192.168.88.1"
+      }
+    }
   }
 }
