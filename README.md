@@ -1,8 +1,9 @@
-# K8S cluster on ProxmoxVE
+# K8S cluster on ProxmoxVE home Lab
 Based on article: https://olav.ninja/deploying-kubernetes-cluster-on-proxmox-part-1
 ## Dependencies:
 - Terraform: https://www.terraform.io/
-- Terraform Provider for Proxmox: https://github.com/bpg/terraform-provider-proxmox
+- Provider for Proxmox: https://github.com/bpg/terraform-provider-proxmox
+- Ansible https://docs.ansible.com/
 - Direnv: https://direnv.net/
   
 To use direnv, create a file called .envrc and add the following:
@@ -10,7 +11,6 @@ To use direnv, create a file called .envrc and add the following:
 export PROXMOX_VE_USERNAME=root@pam
 export PROXMOX_VE_PASSWORD=<your proxmox password>
 ```
-- Ansible https://docs.ansible.com/
 
 ## Config
 
@@ -221,7 +221,7 @@ kubectl create namespace monitoring
 ```
 4. Deploy an Elasticsearch cluster
 ```shell
-kubectl apply -f .\k8s\monitoring\elastic\elasticsearch.yaml
+kubectl apply -f .\k8s\elastic\elasticsearch.yaml
 ```
 The operator automatically creates and manages Kubernetes resources to achieve the desired state of the Elasticsearch cluster. It may take up to a few minutes until all the resources are created and the cluster is ready for use.
 
@@ -254,7 +254,7 @@ kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/down
 ```
 Deploying the AllInOne image
 ```shell
-kubectl apply -f .\k8s\monitoring\jaeger\jaeger.yaml
+kubectl apply -f .\k8s\jaeger\jaeger.yaml
 ```
 
 Accessing the Dashboard:
@@ -278,5 +278,5 @@ spec:
   type: NodePort
 ```
 ```shell
-kubectl apply -f .\k8s\monitoring\jaeger\nodeport.yaml
+kubectl apply -f .\k8s\jaeger\nodeport.yaml
 ```
