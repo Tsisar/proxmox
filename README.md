@@ -121,6 +121,8 @@ kubectl apply -f .\k8s\kubernetes-dashboard\nodeport.yaml
 ```
 
 ## Dynamic Volume Provisioning
+<span style="color:red;">NOT FOR PRODUCTION!</span>
+
 https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/
 
 Local Storage class.
