@@ -39,9 +39,9 @@ https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 ```
 
-Creating a Service Account
+Creating sample user
 
-We are creating Service Account with the name admin-user in namespace kubernetes-dashboard first:
+Creating a Service Account:
 ```yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -64,8 +64,10 @@ subjects:
   name: admin-user
   namespace: kubernetes-dashboard
 ```
-
-Getting a Bearer Token for ServiceAccount:
+```shell
+kubectl apply -f .\k8s\kubernetes-dashboard\service-account.yaml
+```
+Now we need to find the token we can use to log in. Execute the following command:
 ```shell
 kubectl -n kubernetes-dashboard create token admin-user
 ```
@@ -80,9 +82,18 @@ metadata:
     kubernetes.io/service-account.name: "admin-user"   
 type: kubernetes.io/service-account-token  
 ```
+```shell
+kubectl apply -f .\k8s\kubernetes-dashboard\admin-user-secret.yaml
+```
 After Secret is created, we can execute the following command to get the token which saved in the Secret:
+
+Linux:
 ```shell
 kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
+```
+Windows:
+```shell
+kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath="{.data.token}" | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
 ```
 
 Accessing the Dashboard:
@@ -105,7 +116,9 @@ spec:
     k8s-app: kubernetes-dashboard
   type: NodePort
 ```
-
+```shell
+kubectl apply -f .\k8s\kubernetes-dashboard\nodeport.yaml
+```
 
 ## Storage class
 Download rancher.io/local-path storage class:
