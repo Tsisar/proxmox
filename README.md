@@ -120,7 +120,11 @@ spec:
 kubectl apply -f .\k8s\kubernetes-dashboard\nodeport.yaml
 ```
 
-## Storage class
+## Dynamic Volume Provisioning
+https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/
+
+Local Storage class.
+
 Download rancher.io/local-path storage class:
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
@@ -134,13 +138,14 @@ Make this storage class (local-path) the default:
 kubectl patch storageclass local-path -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}'
 ```
 
-
 ## ArgoCD
 https://argo-cd.readthedocs.io/en/stable/
 
 Install Argo CD:
 ```shell
 kubectl create namespace argocd
+```
+```shell
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 Accessing the ArgoCD:
@@ -164,6 +169,9 @@ spec:
   selector:
     app.kubernetes.io/name: argocd-server
   type: NodePort
+```
+```shell
+kubectl apply -n argocd -f .\k8s\argocd\argocd-server-nodeport.yaml
 ```
 Installing ArgoCD Command Line Interface:
 ```shell
