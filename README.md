@@ -171,7 +171,7 @@ spec:
   type: NodePort
 ```
 ```shell
-kubectl apply -n argocd -f .\k8s\argocd\argocd-server-nodeport.yaml
+kubectl apply -n argocd -f .\k8s\argocd\nodeport.yaml
 ```
 Installing ArgoCD Command Line Interface:
 ```shell
@@ -183,7 +183,7 @@ chmod +x argocd-linux-amd64
 ```shell
 sudo mv argocd-linux-amd64 /usr/local/bin/argocd
 ```
-- The ArgoCD initial password:
+The ArgoCD initial password:
 ```shell
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode; echo
 ```
@@ -207,27 +207,76 @@ Currently 8.x ElasticSearch version is not compatible with Jaeger, hence we usin
 Elasticsearch is deployed using the Kubernetes Operator pattern. You can read in more detail in the article Elastic Cloud on Kubernetes https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-overview.html.
 
 1. Install custom resource definitions:
-    ```shell
-    kubectl create -f https://download.elastic.co/downloads/eck/2.10.0/crds.yaml
-    ```
+```shell
+kubectl create -f https://download.elastic.co/downloads/eck/2.10.0/crds.yaml
+```
 2. Install the operator with its RBAC rules:
-   ```shell
-   kubectl apply -f https://download.elastic.co/downloads/eck/2.10.0/operator.yaml
-   ```
+```shell
+kubectl apply -f https://download.elastic.co/downloads/eck/2.10.0/operator.yaml
+```
 
 3. Create the namespace `monitoring` for further deployment.
-   ```shell
-   kubectl create namespace monitoring
-   ```
+```shell
+kubectl create namespace monitoring
+```
 4. Deploy an Elasticsearch cluster
-   ```shell
-   kubectl apply -f .\k8s\monitoring\elastic\elasticsearch.yaml
-   ```
-   The operator automatically creates and manages Kubernetes resources to achieve the desired state of the Elasticsearch cluster. It may take up to a few minutes until all the resources are created and the cluster is ready for use.
+```shell
+kubectl apply -f .\k8s\monitoring\elastic\elasticsearch.yaml
+```
+The operator automatically creates and manages Kubernetes resources to achieve the desired state of the Elasticsearch cluster. It may take up to a few minutes until all the resources are created and the cluster is ready for use.
 
 5. Elasticsearch access
-   ```shell
-   PASSWORD=$(kubectl -n monitoring  get secret elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')
-   kubectl -n monitoring create secret generic jaeger-storage-secret --from-literal=ES_PASSWORD=${PASSWORD} --from-literal=ES_USERNAME=elastic
-   ```
-   The command will automatically create jaeger-storage-secret for further use in Jaeger.
+```shell
+PASSWORD=$(kubectl -n monitoring  get secret elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')
+kubectl -n monitoring create secret generic jaeger-storage-secret --from-literal=ES_PASSWORD=${PASSWORD} --from-literal=ES_USERNAME=elastic
+```
+The command will automatically create jaeger-storage-secret for further use in Jaeger.
+
+
+## Cert manager
+https://cert-manager.io/
+
+Install all cert-manager components:
+```shell
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
+```
+Wait for cert-manager webhook to be ready
+
+## Jaeger for Kubernetes
+https://www.jaegertracing.io/docs/1.51/operator/
+ 
+Installing the Operator
+```shell
+kubectl create namespace observability
+```
+```shell
+kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.51.0/jaeger-operator.yaml -n observability
+```
+Deploying the AllInOne image
+```shell
+kubectl apply -f .\k8s\monitoring\jaeger\jaeger.yaml
+```
+
+Accessing the Dashboard:
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jaeger
+  name: jaeger-nodeport
+  namespace: monitoring
+spec:
+  ports:
+    - name: http-query
+      protocol: TCP
+      port: 16686
+      targetPort: 16686
+      nodePort: 30012
+  selector:
+    app: jaeger
+  type: NodePort
+```
+```shell
+kubectl apply -f .\k8s\monitoring\jaeger\nodeport.yaml
+```

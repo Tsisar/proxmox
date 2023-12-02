@@ -9,15 +9,15 @@ spec:
   strategy: allInOne
 
   allInOne:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: "key"
-                  operator: In
-                  values:
-                    - "infra"
+#    affinity:
+#      nodeAffinity:
+#        requiredDuringSchedulingIgnoredDuringExecution:
+#          nodeSelectorTerms:
+#            - matchExpressions:
+#                - key: "key"
+#                  operator: In
+#                  values:
+#                    - "infra"
     image: jaegertracing/all-in-one:latest
     options:
       log-level: info
