@@ -176,7 +176,11 @@ kubectl apply -n argocd -f .\k8s\argocd\argocd-server-nodeport.yaml
 Installing ArgoCD Command Line Interface:
 ```shell
 wget https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+```
+```shell
 chmod +x argocd-linux-amd64
+```
+```shell
 sudo mv argocd-linux-amd64 /usr/local/bin/argocd
 ```
 - The ArgoCD initial password:
