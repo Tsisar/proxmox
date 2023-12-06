@@ -282,3 +282,20 @@ spec:
 ```shell
 kubectl apply -f .\k8s\jaeger\nodeport.yaml
 ```
+
+## Rabbit MQ
+https://medium.com/nerd-for-tech/deploying-rabbitmq-on-kubernetes-using-rabbitmq-cluster-operator-ef99f7a4e417
+
+Install the RabbitMQ operator
+```shell
+kubectl apply -f https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml
+```
+
+Check if the components are healthy in the rabbitmq-system namespace
+```shell
+kubectl get all -o wide -n rabbitmq-system
+```
+Apply the RabbitMQ cluster
+```shell
+kubectl apply -f .\k8s\rabbitmq\rabbitmq.yaml
+```
